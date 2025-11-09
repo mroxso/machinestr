@@ -9,8 +9,9 @@ import { useDVMProvider } from '@/hooks/useDVMProviders';
 import { useDVMProviderJobs } from '@/hooks/useDVMProviderJobs';
 import { getJobKindInfo, isResultKind, isFeedbackKind } from '@/lib/dvmTypes';
 import { parseJobRequest, parseJobResult, parseJobFeedback, getStatusColor, getStatusIcon } from '@/lib/dvmUtils';
-import { ArrowLeft, ExternalLink, Sparkles, Activity, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Sparkles, Activity, Clock, CheckCircle2, AlertCircle, Settings } from 'lucide-react';
 import type { NostrEvent } from '@nostrify/nostrify';
+import { LoginArea } from '@/components/auth/LoginArea';
 
 export default function DVMDetailsPage() {
   const { pubkey } = useParams<{ pubkey: string }>();
@@ -87,10 +88,23 @@ export default function DVMDetailsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
       <div className="container mx-auto px-4 py-8 max-w-6xl">
-        <Button variant="ghost" onClick={() => navigate('/dvm')} className="mb-6">
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to DVM Interface
-        </Button>
+        <div className="flex items-center justify-between mb-6">
+          <Button variant="ghost" onClick={() => navigate('/dvm')}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to DVM Interface
+          </Button>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate('/settings')}
+              aria-label="Settings"
+            >
+              <Settings className="h-5 w-5" />
+            </Button>
+            <LoginArea className="max-w-60" />
+          </div>
+        </div>
 
         <Card className="mb-8">
           <CardHeader>

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { LoginArea } from '@/components/auth/LoginArea';
-import { Sparkles, Zap, Shield, Globe, ArrowRight, Languages, Image, Search, FileText } from 'lucide-react';
+import { Sparkles, Zap, Shield, Globe, ArrowRight, Languages, Image, Search, FileText, Settings } from 'lucide-react';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -27,7 +27,17 @@ const Index = () => {
               machinestr
             </h1>
           </div>
-          <LoginArea className="max-w-60" />
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate('/settings')}
+              aria-label="Settings"
+            >
+              <Settings className="h-5 w-5" />
+            </Button>
+            <LoginArea className="max-w-60" />
+          </div>
         </header>
 
         <section className="text-center mb-20 space-y-6">

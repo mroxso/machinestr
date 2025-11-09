@@ -5,6 +5,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { LoginArea } from '@/components/auth/LoginArea';
 import { DVMProviderCard, DVMProviderCardSkeleton } from '@/components/dvm/DVMProviderCard';
 import { JobRequestForm } from '@/components/dvm/JobRequestForm';
 import { JobHistoryCard, JobHistoryCardSkeleton } from '@/components/dvm/JobHistoryCard';
@@ -13,7 +15,7 @@ import { useDVMJobHistory, useActiveDVMJobs } from '@/hooks/useDVMJobs';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { DVM_JOB_KINDS } from '@/lib/dvmTypes';
 import type { DVMProvider } from '@/lib/dvmTypes';
-import { Search, Sparkles, History, Activity } from 'lucide-react';
+import { Search, Sparkles, History, Activity, Settings, ArrowLeft } from 'lucide-react';
 
 export default function DVMPage() {
   const { user } = useCurrentUser();
@@ -57,21 +59,37 @@ export default function DVMPage() {
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="mb-8 space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="bg-gradient-to-br from-purple-500 to-blue-600 p-3 rounded-2xl shadow-lg">
-              <Sparkles className="h-8 w-8 text-white" />
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="bg-gradient-to-br from-purple-500 to-blue-600 p-3 rounded-2xl shadow-lg">
+                <Sparkles className="h-8 w-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                  machinestr
+                </h1>
+              </div>
             </div>
-            <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                machinestr
-              </h1>
-              <p className="text-muted-foreground">Data Vending Machine Interface</p>
+            <div className="flex items-center gap-3">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => navigate('/')}
+                aria-label="Back to home"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => navigate('/settings')}
+                aria-label="Settings"
+              >
+                <Settings className="h-5 w-5" />
+              </Button>
+              <LoginArea className="max-w-60" />
             </div>
           </div>
-          <p className="text-lg text-muted-foreground max-w-2xl">
-            Discover AI-powered services on Nostr. Submit tasks to decentralized service providers for text
-            processing, translation, image generation, and more.
-          </p>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
