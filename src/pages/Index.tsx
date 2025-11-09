@@ -1,22 +1,168 @@
 import { useSeoMeta } from '@unhead/react';
-
-// FIXME: Update this page (the content is just a fallback if you fail to update the page)
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { LoginArea } from '@/components/auth/LoginArea';
+import { Sparkles, Zap, Shield, Globe, ArrowRight, Languages, Image, Search, FileText } from 'lucide-react';
 
 const Index = () => {
+  const navigate = useNavigate();
+
   useSeoMeta({
-    title: 'Welcome to Your Blank App',
-    description: 'A modern Nostr client application built with React, TailwindCSS, and Nostrify.',
+    title: 'machinestr - Data Vending Machine Interface',
+    description: 'Discover and interact with AI-powered services on Nostr. Submit tasks for text processing, translation, image generation, and more.',
   });
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4 text-gray-900 dark:text-gray-100">
-          Welcome to Your Blank App
-        </h1>
-        <p className="text-xl text-gray-600 dark:text-gray-400">
-          Start building your amazing project here!
-        </p>
+    <div className="min-h-screen bg-gradient-to-b from-background via-muted/20 to-background">
+      <div className="container mx-auto px-4 py-12 max-w-6xl">
+        <header className="flex items-center justify-between mb-16">
+          <div className="flex items-center gap-3">
+            <div className="bg-gradient-to-br from-purple-500 to-blue-600 p-3 rounded-2xl shadow-lg">
+              <Sparkles className="h-7 w-7 text-white" />
+            </div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              machinestr
+            </h1>
+          </div>
+          <LoginArea className="max-w-60" />
+        </header>
+
+        <section className="text-center mb-20 space-y-6">
+          <div className="inline-block">
+            <Badge variant="outline" className="mb-4 px-4 py-2 text-sm">
+              <Zap className="h-3 w-3 mr-2" />
+              Powered by Nostr Protocol
+            </Badge>
+          </div>
+          <h2 className="text-5xl md:text-6xl font-bold tracking-tight">
+            AI-Powered Services
+            <br />
+            <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              On Nostr
+            </span>
+          </h2>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            Discover decentralized AI services. Submit tasks to service providers for text processing, translation,
+            image generation, and more—all on the Nostr network.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
+            <Button size="lg" onClick={() => navigate('/dvm')} className="gap-2 px-8">
+              Launch Interface
+              <ArrowRight className="h-5 w-5" />
+            </Button>
+            <Button size="lg" variant="outline" onClick={() => navigate('/dvm')} className="gap-2">
+              <Sparkles className="h-5 w-5" />
+              Discover Services
+            </Button>
+          </div>
+        </section>
+
+        <section className="mb-20">
+          <h3 className="text-2xl font-bold text-center mb-12">Featured Services</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card className="border-2 hover:border-primary transition-colors">
+              <CardHeader>
+                <div className="bg-gradient-to-br from-blue-500 to-cyan-500 p-3 rounded-xl w-fit mb-2">
+                  <Languages className="h-6 w-6 text-white" />
+                </div>
+                <CardTitle className="text-lg">Translation</CardTitle>
+                <CardDescription>Translate text to any language</CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="border-2 hover:border-primary transition-colors">
+              <CardHeader>
+                <div className="bg-gradient-to-br from-purple-500 to-pink-500 p-3 rounded-xl w-fit mb-2">
+                  <Image className="h-6 w-6 text-white" />
+                </div>
+                <CardTitle className="text-lg">Image Generation</CardTitle>
+                <CardDescription>Create images with AI</CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="border-2 hover:border-primary transition-colors">
+              <CardHeader>
+                <div className="bg-gradient-to-br from-amber-500 to-orange-500 p-3 rounded-xl w-fit mb-2">
+                  <FileText className="h-6 w-6 text-white" />
+                </div>
+                <CardTitle className="text-lg">Summarization</CardTitle>
+                <CardDescription>Summarize long content</CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="border-2 hover:border-primary transition-colors">
+              <CardHeader>
+                <div className="bg-gradient-to-br from-green-500 to-emerald-500 p-3 rounded-xl w-fit mb-2">
+                  <Search className="h-6 w-6 text-white" />
+                </div>
+                <CardTitle className="text-lg">Discovery</CardTitle>
+                <CardDescription>Find relevant content</CardDescription>
+              </CardHeader>
+            </Card>
+          </div>
+        </section>
+
+        <section className="mb-20">
+          <h3 className="text-2xl font-bold text-center mb-12">Why machinestr?</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Card>
+              <CardHeader>
+                <Shield className="h-10 w-10 text-purple-600 mb-3" />
+                <CardTitle>Decentralized</CardTitle>
+                <CardDescription>
+                  No central authority. Service providers compete to deliver the best results for your tasks.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <Zap className="h-10 w-10 text-amber-600 mb-3" />
+                <CardTitle>Pay as You Go</CardTitle>
+                <CardDescription>
+                  Only pay for results you're satisfied with. Set maximum bids and receive Lightning invoices.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <Globe className="h-10 w-10 text-blue-600 mb-3" />
+                <CardTitle>Open Protocol</CardTitle>
+                <CardDescription>
+                  Built on Nostr (NIP-90). Interoperable with other clients and accessible to anyone.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </div>
+        </section>
+
+        <section className="text-center py-16 px-6 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20 rounded-3xl">
+          <h3 className="text-3xl font-bold mb-4">Ready to get started?</h3>
+          <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">
+            Launch the interface to discover services and create your first job request.
+          </p>
+          <Button size="lg" onClick={() => navigate('/dvm')} className="gap-2 px-8">
+            Launch Interface
+            <ArrowRight className="h-5 w-5" />
+          </Button>
+        </section>
+
+        <footer className="mt-20 pt-8 border-t text-center text-sm text-muted-foreground">
+          <p>
+            Built with{' '}
+            <a
+              href="https://soapbox.pub/mkstack"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:no-underline"
+            >
+              MKStack
+            </a>
+          </p>
+        </footer>
       </div>
     </div>
   );
