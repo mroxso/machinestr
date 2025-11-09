@@ -5,6 +5,8 @@ import type { DVMProvider } from '@/lib/dvmTypes';
 
 /**
  * Hook to discover DVM providers from the network using NIP-89
+ * Note: Queries for kind:31990 (application handlers) and filters for DVMs
+ * by checking for k tags in the 5000-5999 range (DVM job kinds)
  */
 export function useDVMProviders(options?: { kinds?: number[]; tags?: string[] }) {
   const { nostr } = useNostr();
@@ -15,15 +17,16 @@ export function useDVMProviders(options?: { kinds?: number[]; tags?: string[] })
       const signal = AbortSignal.any([c.signal, AbortSignal.timeout(3000)]);
 
       const filters: Array<{ kinds: number[]; '#k'?: string[]; '#t'?: string[] }> = [
-        { kinds: [31990] },
+        { kinds: [31990] }, // NIP-89 application handlers
       ];
 
-      // Add kind filter if specified
+      // Add DVM job kind filter if specified (5000-5999)
+      // This filters at relay level for better performance
       if (options?.kinds && options.kinds.length > 0) {
         filters[0]['#k'] = options.kinds.map((k) => k.toString());
       }
 
-      // Add tag filter if specified
+      // Add tag filter if specified (e.g., 'bitcoin', 'translation')
       if (options?.tags && options.tags.length > 0) {
         filters[0]['#t'] = options.tags;
       }
@@ -31,11 +34,12 @@ export function useDVMProviders(options?: { kinds?: number[]; tags?: string[] })
       const events = await nostr.query(filters, { signal });
 
       // Parse and deduplicate providers
+      // parseDVMProvider filters out non-DVM applications (those without k tags in 5000-5999)
       const providersMap = new Map<string, DVMProvider>();
 
       for (const event of events) {
         const provider = parseDVMProvider(event);
-        if (!provider) continue;
+        if (!provider) continue; // Skips non-DVM applications
 
         const existing = providersMap.get(provider.pubkey);
         if (!existing || event.created_at > existing.event.created_at) {

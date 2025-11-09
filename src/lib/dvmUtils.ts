@@ -114,6 +114,9 @@ export function parseJobFeedback(event: NostrEvent): DVMJobFeedback | null {
 export function parseDVMProvider(event: NostrEvent): DVMProvider | null {
   if (event.kind !== 31990) return null;
 
+  // Filter out non-DVM providers by checking for DVM job kinds (5000-5999)
+  if (!isDVMProvider(event)) return null;
+
   let metadata: { name?: string; about?: string; picture?: string; nip05?: string; lud16?: string } = {};
   if (event.content) {
     try {
@@ -227,4 +230,18 @@ export function getStatusIcon(status: DVMFeedbackStatus | 'pending' | 'completed
 export function formatAmount(millisats: number): string {
   const sats = Math.floor(millisats / 1000);
   return sats.toLocaleString();
+}
+
+/**
+ * Check if a NIP-89 handler event (kind:31990) is a DVM provider
+ * DVMs are identified by having at least one k tag in the 5000-5999 range
+ */
+export function isDVMProvider(event: NostrEvent): boolean {
+  if (event.kind !== 31990) return false;
+  
+  return event.tags.some(([name, value]) => {
+    if (name !== 'k') return false;
+    const kind = parseInt(value);
+    return !isNaN(kind) && kind >= 5000 && kind < 6000;
+  });
 }
