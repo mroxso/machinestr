@@ -10,8 +10,9 @@ const Index = () => {
   const navigate = useNavigate();
 
   useSeoMeta({
-    title: 'machinestr - Data Vending Machine Interface',
-    description: 'Discover and interact with AI-powered services on Nostr. Submit tasks for text processing, translation, image generation, and more.',
+    title: 'machinestr - Data Vending Machines',
+    description:
+      'Find and use digital vending machines for data and compute — request work, receive results, and optionally pay for what you use.',
   });
 
   return (
@@ -33,42 +34,43 @@ const Index = () => {
           <div className="inline-block">
             <Badge variant="outline" className="mb-4 px-4 py-2 text-sm">
               <Zap className="h-3 w-3 mr-2" />
-              Powered by Nostr Protocol
+              Data Vending Machines
             </Badge>
           </div>
           <h2 className="text-5xl md:text-6xl font-bold tracking-tight">
-            AI-Powered Services
+            Digital vending machines
             <br />
             <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              On Nostr
+              for data — simple, fast, and shared
             </span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Discover decentralized AI services. Submit tasks to service providers for text processing, translation,
-            image generation, and more—all on the Nostr network.
+            Think of a DVM like a vending machine — but for data and compute. Pick a service (a model, a dataset, or a
+            transformation), drop a request, and get back results. Some providers may ask for payment (like buying a snack),
+            but many keep things simple and pay-as-you-go.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
             <Button size="lg" onClick={() => navigate('/dvm')} className="gap-2 px-8">
-              Launch Interface
+              Explore DVMs
               <ArrowRight className="h-5 w-5" />
             </Button>
             <Button size="lg" variant="outline" onClick={() => navigate('/dvm')} className="gap-2">
               <Sparkles className="h-5 w-5" />
-              Discover Services
+              Browse Providers
             </Button>
           </div>
         </section>
 
         <section className="mb-20">
-          <h3 className="text-2xl font-bold text-center mb-12">Featured Services</h3>
+          <h3 className="text-2xl font-bold text-center mb-12">What you can get from a DVM</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card className="border-2 hover:border-primary transition-colors">
               <CardHeader>
                 <div className="bg-gradient-to-br from-blue-500 to-cyan-500 p-3 rounded-xl w-fit mb-2">
                   <Languages className="h-6 w-6 text-white" />
                 </div>
-                <CardTitle className="text-lg">Translation</CardTitle>
-                <CardDescription>Translate text to any language</CardDescription>
+                <CardTitle className="text-lg">Model Inference</CardTitle>
+                <CardDescription>Run models remotely (text, image, audio inference)</CardDescription>
               </CardHeader>
             </Card>
 
@@ -77,8 +79,8 @@ const Index = () => {
                 <div className="bg-gradient-to-br from-purple-500 to-pink-500 p-3 rounded-xl w-fit mb-2">
                   <Image className="h-6 w-6 text-white" />
                 </div>
-                <CardTitle className="text-lg">Image Generation</CardTitle>
-                <CardDescription>Create images with AI</CardDescription>
+                <CardTitle className="text-lg">Dataset Access</CardTitle>
+                <CardDescription>Purchase or query curated datasets and feeds</CardDescription>
               </CardHeader>
             </Card>
 
@@ -87,8 +89,8 @@ const Index = () => {
                 <div className="bg-gradient-to-br from-amber-500 to-orange-500 p-3 rounded-xl w-fit mb-2">
                   <FileText className="h-6 w-6 text-white" />
                 </div>
-                <CardTitle className="text-lg">Summarization</CardTitle>
-                <CardDescription>Summarize long content</CardDescription>
+                <CardTitle className="text-lg">Transformations</CardTitle>
+                <CardDescription>Summarize, translate, or otherwise transform your data</CardDescription>
               </CardHeader>
             </Card>
 
@@ -98,7 +100,7 @@ const Index = () => {
                   <Search className="h-6 w-6 text-white" />
                 </div>
                 <CardTitle className="text-lg">Discovery</CardTitle>
-                <CardDescription>Find relevant content</CardDescription>
+                <CardDescription>Find providers, pipelines, and live data feeds</CardDescription>
               </CardHeader>
             </Card>
           </div>
@@ -140,9 +142,11 @@ const Index = () => {
         </section>
 
         <section className="text-center py-16 px-6 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20 rounded-3xl">
-          <h3 className="text-3xl font-bold mb-4">Ready to get started?</h3>
+          <h3 className="text-3xl font-bold mb-4">How it works — quick</h3>
           <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">
-            Launch the interface to discover services and create your first job request.
+            Tap a provider, send a request, and the machine hands you the result — like getting a snack from a vending
+            machine, but digital. Results can be summaries, images, model outputs, or datasets. If the service costs
+            something, you'll get a small invoice and then the output — quick and pay-as-you-go.
           </p>
           <Button size="lg" onClick={() => navigate('/dvm')} className="gap-2 px-8">
             Launch Interface
