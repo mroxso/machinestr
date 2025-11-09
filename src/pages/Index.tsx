@@ -163,20 +163,6 @@ const Index = () => {
             <ArrowRight className="h-5 w-5" />
           </Button>
         </section>
-
-        <footer className="mt-20 pt-8 border-t text-center text-sm text-muted-foreground">
-          <p>
-            Built with{' '}
-            <a
-              href="https://soapbox.pub/mkstack"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline hover:no-underline"
-            >
-              MKStack
-            </a>
-          </p>
-        </footer>
       </div>
     </div>
   );

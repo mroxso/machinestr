@@ -6,6 +6,7 @@ import { RelayListManager } from "@/components/RelayListManager";
 import { useTheme } from "@/hooks/useTheme";
 import { useNavigate } from "react-router-dom";
 import { Moon, Sun, Monitor, ArrowLeft } from "lucide-react";
+import packageJson from "../../package.json";
 
 export function Settings() {
   const { theme, setTheme } = useTheme();
@@ -104,6 +105,11 @@ export function Settings() {
           <RelayListManager />
         </CardContent>
       </Card>
+
+      {/* Version */}
+      <div className="text-center text-sm text-muted-foreground pb-4">
+        <p>Version {packageJson.version}</p>
+      </div>
     </div>
   );
 }
