@@ -4,6 +4,9 @@ import type { NostrEvent } from '@nostrify/nostrify';
 
 /**
  * Hook to get recent job requests and results for a specific DVM provider
+ * This includes:
+ * 1. Jobs specifically targeting this provider (with p tag)
+ * 2. Jobs where this provider has responded (feedback or results)
  */
 export function useDVMProviderJobs(providerPubkey: string) {
   const { nostr } = useNostr();
@@ -13,7 +16,22 @@ export function useDVMProviderJobs(providerPubkey: string) {
     queryFn: async (c) => {
       const signal = AbortSignal.any([c.signal, AbortSignal.timeout(5000)]);
 
-      // First, get feedback and results from this provider
+      // Query 1: Get job requests specifically targeting this provider (with p tag)
+      const targetedJobRequests = await nostr.query(
+        [
+          {
+            kinds: [
+              5000, 5001, 5002, 5050, 5100, 5200, 5201, 5202, 5250, 5300, 5301, 5302, 5303, 5400, 5500, 5900, 5901,
+              5905, 5970,
+            ],
+            '#p': [providerPubkey],
+            limit: 50,
+          },
+        ],
+        { signal }
+      );
+
+      // Query 2: Get feedback and results from this provider
       const providerEvents = await nostr.query(
         [
           {
@@ -37,24 +55,29 @@ export function useDVMProviderJobs(providerPubkey: string) {
         }
       }
 
-      if (jobRequestIds.size === 0) {
-        return [];
+      // Fetch the original job requests (that weren't already fetched in query 1)
+      const existingIds = new Set(targetedJobRequests.map((r) => r.id));
+      const missingIds = Array.from(jobRequestIds).filter((id) => !existingIds.has(id));
+
+      let additionalJobRequests: NostrEvent[] = [];
+      if (missingIds.length > 0) {
+        additionalJobRequests = await nostr.query(
+          [
+            {
+              ids: missingIds,
+            },
+          ],
+          { signal }
+        );
       }
 
-      // Fetch the original job requests
-      const jobRequests = await nostr.query(
-        [
-          {
-            ids: Array.from(jobRequestIds),
-          },
-        ],
-        { signal }
-      );
+      // Combine all job requests
+      const allJobRequests = [...targetedJobRequests, ...additionalJobRequests];
 
-      // Combine and sort by creation time
+      // Build jobs map with requests and their responses
       const jobsMap = new Map<string, { request: NostrEvent; responses: NostrEvent[] }>();
 
-      for (const request of jobRequests) {
+      for (const request of allJobRequests) {
         jobsMap.set(request.id, { request, responses: [] });
       }
 
@@ -65,8 +88,7 @@ export function useDVMProviderJobs(providerPubkey: string) {
         }
       }
 
-      const jobs = Array.from(jobsMap.values())
-        .sort((a, b) => b.request.created_at - a.request.created_at);
+      const jobs = Array.from(jobsMap.values()).sort((a, b) => b.request.created_at - a.request.created_at);
 
       return jobs;
     },

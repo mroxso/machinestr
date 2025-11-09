@@ -11,11 +11,11 @@ import { DVMProviderCard, DVMProviderCardSkeleton } from '@/components/dvm/DVMPr
 import { JobRequestForm } from '@/components/dvm/JobRequestForm';
 import { JobHistoryCard, JobHistoryCardSkeleton } from '@/components/dvm/JobHistoryCard';
 import { useDVMProviders, useDVMProvider } from '@/hooks/useDVMProviders';
-import { useDVMJobHistory, useActiveDVMJobs } from '@/hooks/useDVMJobs';
+import { useDVMJobHistory, useActiveDVMJobs, useDVMGlobalJobHistory } from '@/hooks/useDVMJobs';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { DVM_JOB_KINDS } from '@/lib/dvmTypes';
 import type { DVMProvider } from '@/lib/dvmTypes';
-import { Search, Sparkles, History, Activity, Settings, ArrowLeft } from 'lucide-react';
+import { Search, Sparkles, History, Activity, Settings, ArrowLeft, Globe } from 'lucide-react';
 
 export default function DVMPage() {
   const { user } = useCurrentUser();
@@ -44,6 +44,7 @@ export default function DVMPage() {
 
   const { data: jobHistory, isLoading: historyLoading } = useDVMJobHistory(user?.pubkey);
   const { data: activeJobs, isLoading: activeLoading } = useActiveDVMJobs(user?.pubkey);
+  const { data: globalJobHistory, isLoading: globalHistoryLoading } = useDVMGlobalJobHistory(30);
 
   const filteredProviders = providers?.filter((p) => {
     if (!searchQuery) return true;
@@ -216,13 +217,7 @@ export default function DVMPage() {
           </TabsContent>
 
           <TabsContent value="history" className="space-y-6">
-            {!user ? (
-              <Card className="border-dashed">
-                <CardContent className="py-12 px-8 text-center">
-                  <p className="text-muted-foreground">Please log in to view your job history</p>
-                </CardContent>
-              </Card>
-            ) : (
+            {user && (
               <>
                 {activeJobs && activeJobs.length > 0 && (
                   <div className="space-y-3">
@@ -252,7 +247,7 @@ export default function DVMPage() {
                 <div className="space-y-3">
                   <h2 className="text-xl font-semibold flex items-center gap-2">
                     <History className="h-5 w-5" />
-                    Job History
+                    My Job History
                   </h2>
                   {historyLoading ? (
                     <div className="space-y-3">
@@ -276,6 +271,33 @@ export default function DVMPage() {
                 </div>
               </>
             )}
+
+            <div className="space-y-3">
+              <h2 className="text-xl font-semibold flex items-center gap-2">
+                <Globe className="h-5 w-5" />
+                Global DVM Activity
+                {!user && <span className="text-sm font-normal text-muted-foreground">(Recent jobs from all users)</span>}
+              </h2>
+              {globalHistoryLoading ? (
+                <div className="space-y-3">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <JobHistoryCardSkeleton key={i} />
+                  ))}
+                </div>
+              ) : globalJobHistory && globalJobHistory.length > 0 ? (
+                <div className="space-y-3">
+                  {globalJobHistory.map((job) => (
+                    <JobHistoryCard key={job.id} job={job} />
+                  ))}
+                </div>
+              ) : (
+                <Card className="border-dashed">
+                  <CardContent className="py-12 px-8 text-center">
+                    <p className="text-muted-foreground">No global job activity yet. Check your relay connections.</p>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
           </TabsContent>
         </Tabs>
       </div>

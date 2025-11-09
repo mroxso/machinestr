@@ -3,12 +3,14 @@ import type { NostrEvent } from '@nostrify/nostrify';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useDVMJobState } from '@/hooks/useDVMJobs';
+import { useDVMProvider } from '@/hooks/useDVMProviders';
 import { parseJobRequest, getStatusColor, getStatusIcon, formatAmount } from '@/lib/dvmUtils';
 import { getJobKindInfo } from '@/lib/dvmTypes';
-import { ChevronDown, ChevronUp, Clock, Zap } from 'lucide-react';
+import { ChevronDown, ChevronUp, Clock, Zap, Bot } from 'lucide-react';
 
 interface JobHistoryCardProps {
   job: NostrEvent;
@@ -21,11 +23,22 @@ export function JobHistoryCard({ job, onViewDetails }: JobHistoryCardProps) {
   const request = parseJobRequest(job);
   const kindInfo = getJobKindInfo(job.kind);
 
+  // Get the provider information
+  const providerPubkey = jobState?.currentProvider;
+  const { data: provider } = useDVMProvider(providerPubkey || '');
+
   const status = jobState?.status || 'pending';
   const statusColor = getStatusColor(status);
   const statusIcon = getStatusIcon(status);
 
   const formattedDate = new Date(job.created_at * 1000).toLocaleString();
+
+  const providerInitials = provider?.name
+    ?.split(' ')
+    .map((n) => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2) || (providerPubkey?.slice(0, 2).toUpperCase() || 'DV');
 
   return (
     <Card>
@@ -43,6 +56,18 @@ export function JobHistoryCard({ job, onViewDetails }: JobHistoryCardProps) {
                 <Clock className="h-3 w-3" />
                 {formattedDate}
               </CardDescription>
+              {providerPubkey && (
+                <div className="flex items-center gap-2 mt-2">
+                  <Avatar className="h-5 w-5">
+                    <AvatarImage src={provider?.picture} alt={provider?.name || 'DVM Provider'} />
+                    <AvatarFallback className="text-[10px]">{providerInitials}</AvatarFallback>
+                  </Avatar>
+                  <span className="text-xs text-muted-foreground flex items-center gap-1">
+                    <Bot className="h-3 w-3" />
+                    {provider?.name || `${providerPubkey.slice(0, 8)}...`}
+                  </span>
+                </div>
+              )}
             </div>
             <CollapsibleTrigger asChild>
               <Button variant="ghost" size="sm">

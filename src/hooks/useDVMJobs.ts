@@ -35,11 +35,14 @@ export function useDVMJobState(jobRequestId: string) {
       // Sort feedback by creation time
       const sortedFeedback = feedbackEvents.sort((a, b) => a!.event.created_at - b!.event.created_at);
 
-      // Determine overall status
+      // Determine overall status and current provider
       let status: DVMJobState['status'] = 'pending';
+      let currentProvider: string | undefined;
+
       if (results.length > 0) {
         const latestResult = results[results.length - 1];
         const latestFeedback = sortedFeedback[sortedFeedback.length - 1];
+        currentProvider = latestResult?.event.pubkey;
 
         if (latestFeedback && latestFeedback.status === 'success') {
           status = 'completed';
@@ -47,13 +50,16 @@ export function useDVMJobState(jobRequestId: string) {
           status = 'completed';
         }
       } else if (sortedFeedback.length > 0) {
-        status = sortedFeedback[sortedFeedback.length - 1]!.status;
+        const latestFeedback = sortedFeedback[sortedFeedback.length - 1];
+        status = latestFeedback!.status;
+        currentProvider = latestFeedback?.event.pubkey;
       }
 
       return {
         results,
         feedback: sortedFeedback,
         status,
+        currentProvider,
       };
     },
     enabled: !!jobRequestId,
@@ -190,5 +196,37 @@ export function useActiveDVMJobs(pubkey?: string) {
     },
     enabled: !!pubkey,
     refetchInterval: 10000, // Poll every 10 seconds for active jobs
+  });
+}
+
+/**
+ * Hook to get global job history from all users (recent DVM activity across the network)
+ */
+export function useDVMGlobalJobHistory(limit = 50) {
+  const { nostr } = useNostr();
+
+  return useQuery({
+    queryKey: ['dvm-global-job-history', limit],
+    queryFn: async (c) => {
+      const signal = AbortSignal.any([c.signal, AbortSignal.timeout(5000)]);
+
+      // Query for recent job requests from all users
+      const jobRequests = await nostr.query(
+        [
+          {
+            kinds: [
+              5000, 5001, 5002, 5050, 5100, 5200, 5201, 5202, 5250, 5300, 5301, 5302, 5303, 5400, 5500, 5900, 5901,
+              5905, 5970,
+            ],
+            limit,
+          },
+        ],
+        { signal }
+      );
+
+      // Sort by creation time (newest first)
+      return jobRequests.sort((a, b) => b.created_at - a.created_at);
+    },
+    staleTime: 1000 * 30, // 30 seconds
   });
 }
